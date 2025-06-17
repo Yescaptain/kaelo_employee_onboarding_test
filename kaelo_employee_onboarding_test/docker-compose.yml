@@ -1,24 +1,25 @@
-version: '3.1'
 services:
   db:
     image: postgres:14
     environment:
-      POSTGRES_DB: odoo
-      POSTGRES_USER: odoo
-      POSTGRES_PASSWORD: odoo
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "odoo"
+      POSTGRES_PASSWORD: "odoo"
     ports:
       - "5432:5432"
 
   odoo:
     image: odoo:17.0
+    platform: linux/amd64 
     depends_on:
       - db
     ports:
       - "8069:8069"
     volumes:
+      - ./config:/etc/odoo
       - ./kaelo_employee_onboarding:/mnt/extra-addons/kaelo_employee_onboarding
       - ./sample_data:/mnt/extra-addons/sample_data
     environment:
-      HOST: db
-      USER: odoo
-      PASSWORD: odoo
+      HOST: "db"
+      USER: "odoo"
+      PASSWORD: "odoo"
