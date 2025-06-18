@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!-- Root menu for Kaelo Onboarding -->
+  <menuitem id="kaelo_onboarding_menu" name="Kaelo Onboarding" sequence="10"/>
+
+  <!-- Tree View for Employee Onboarding -->
+  <record id="view_employee_onboarding_tree" model="ir.ui.view">
+    <field name="name">employee.onboarding.tree</field>
+    <field name="model">employee.onboarding</field>
+    <field name="arch" type="xml">
+      <tree string="Employee Onboarding Records">
+        <field name="full_name"/>
+        <field name="employee_number"/>
+        <field name="id_number"/>
+        <field name="email"/>
+        <field name="date_of_birth"/>
+      </tree>
+    </field>
+  </record>
+
+  <!-- Form View for Employee Onboarding -->
+  <record id="view_employee_onboarding_form" model="ir.ui.view">
+    <field name="name">employee.onboarding.form</field>
+    <field name="model">employee.onboarding</field>
+    <field name="arch" type="xml">
+      <form string="Employee Onboarding Record">
+        <group>
+          <field name="full_name"/>
+          <field name="employee_number"/>
+          <field name="id_number"/>
+          <field name="email"/>
+          <field name="date_of_birth"/>
+        </group>
+      </form>
+    </field>
+  </record>
+
+  <!-- Action to open the Employee Onboarding list -->
+  <record id="action_employee_onboarding" model="ir.actions.act_window">
+    <field name="name">Onboarding Records</field>
+    <field name="res_model">employee.onboarding</field>
+    <field name="view_mode">tree,form</field>
+  </record>
+
+  <!-- Menu to access the Employee Onboarding records -->
+  <menuitem id="kaelo_onboarding_records_action"
+            name="Onboarding Records"
+            parent="kaelo_onboarding_menu"
+            action="action_employee_onboarding"
+            sequence="10"/>
+</odoo>
