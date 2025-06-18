@@ -18,7 +18,6 @@ class EmployeeOnboarding(models.Model):
     @api.constrains('full_name', 'id_number', 'date_of_birth', 'employee_number', 'email')
     def _check_fields(self):
         for record in self:
-            # Validate required fields (redundant since required=True, but safe)
             if not record.full_name:
                 raise ValidationError("Full Name is required.")
             if not record.id_number:
@@ -26,15 +25,12 @@ class EmployeeOnboarding(models.Model):
             if not record.date_of_birth:
                 raise ValidationError("Date of Birth is required.")
 
-            # Date of birth must not be in the future
             if record.date_of_birth > date.today():
                 raise ValidationError("Date of Birth cannot be in the future.")
 
-            # Validate email format with regex
             if record.email and not re.match(EMAIL_REGEX, record.email):
                 raise ValidationError(f"Email '{record.email}' is not valid.")
 
-            # Check uniqueness of fields (exclude current record)
             unique_fields = {
                 'full_name': record.full_name,
                 'id_number': record.id_number,
