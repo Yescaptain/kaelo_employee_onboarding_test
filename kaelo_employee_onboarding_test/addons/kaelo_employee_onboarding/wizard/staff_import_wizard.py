@@ -60,6 +60,13 @@ class StaffImportWizard(models.TransientModel):
                 errors.append(err_msg)
                 continue
 
+            # Reject future date_of_birth here in import wizard
+            if dob_obj.date() > fields.Date.today():
+                err_msg = f"Line {idx}: Date of Birth cannot be in the future."
+                print(f"ERROR: {err_msg}", flush=True)
+                errors.append(err_msg)
+                continue
+
             duplicate = False
             if not employee_number:
                 err_msg = f"Line {idx}: Employee Number is missing."
@@ -91,7 +98,6 @@ class StaffImportWizard(models.TransientModel):
                 print(f"Skipping line {idx} due to duplicates or missing data.", flush=True)
                 continue
 
-            # Register to prevent duplicates in this run
             seen_emp_numbers.add(employee_number)
             seen_full_names.add(full_name)
             seen_id_numbers.add(id_number)
@@ -99,7 +105,7 @@ class StaffImportWizard(models.TransientModel):
                 seen_emails.add(email)
 
             try:
-                new_rec = Employee.create({
+                new_record = Employee.create({
                     'full_name': full_name,
                     'id_number': id_number,
                     'date_of_birth': date_of_birth,
@@ -107,7 +113,7 @@ class StaffImportWizard(models.TransientModel):
                     'email': email,
                 })
                 created += 1
-                print(f"Created employee record ID {new_rec.id} at line {idx}", flush=True)
+                print(f"Created employee record with ID: {new_record.id}", flush=True)
             except Exception as e:
                 err_msg = f"Line {idx}: Failed to create employee record: {str(e)}"
                 print(f"ERROR: {err_msg}", flush=True)
@@ -128,7 +134,6 @@ class StaffImportWizard(models.TransientModel):
                 },
             }
 
-        # No errors - success notification + redirect to list
         return {
             'type': 'ir.actions.act_window',
             'name': 'Onboarding Records',
