@@ -22,7 +22,7 @@
     <field name="name">Import Staff</field>
     <field name="res_model">employee.onboarding.import</field>
     <field name="view_mode">form</field>
-    <field name="target">new</field>
+    <field name="target">new</field> <!-- This makes wizard open as modal popup -->
   </record>
 
   <!-- Menu Item for Import Staff -->

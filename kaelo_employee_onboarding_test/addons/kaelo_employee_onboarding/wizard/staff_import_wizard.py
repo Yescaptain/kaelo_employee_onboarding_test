@@ -22,38 +22,39 @@ class StaffImportWizard(models.TransientModel):
 
         Employee = self.env['employee.onboarding']
 
-        # Pre-fetch existing entries for duplicate detection
+        # Preload existing field values for duplicate detection
         existing_emp_numbers = set(Employee.search([]).mapped('employee_number'))
         existing_full_names = set(Employee.search([]).mapped('full_name'))
         existing_id_numbers = set(Employee.search([]).mapped('id_number'))
         existing_emails = set(Employee.search([]).mapped('email'))
 
+        # Track duplicates within current import file
         seen_emp_numbers = set()
         seen_full_names = set()
         seen_id_numbers = set()
         seen_emails = set()
 
-        for idx, row in enumerate(reader, start=2):  # CSV header at line 1
+        for idx, row in enumerate(reader, start=2):  # Assuming header line is 1
             full_name = (row.get('full_name') or '').strip()
             id_number = (row.get('id_number') or '').strip()
-            dob_text = (row.get('date_of_birth') or '').strip()
+            date_of_birth_text = (row.get('date_of_birth') or '').strip()
             employee_number = (row.get('employee_number') or '').strip()
             email = (row.get('email') or '').strip()
 
             # Validate required fields
-            if not full_name or not id_number or not dob_text:
+            if not full_name or not id_number or not date_of_birth_text:
                 errors.append(f"Line {idx}: Missing required fields (Full Name, ID Number, or Date of Birth).")
                 continue
 
-            # Validate and standardize date format
+            # Parse and standardize date_of_birth from MM/DD/YYYY to YYYY-MM-DD
             try:
-                dob_obj = datetime.strptime(dob_text, '%d/%m/%Y')
+                dob_obj = datetime.strptime(date_of_birth_text, '%m/%d/%Y')
                 date_of_birth = dob_obj.strftime('%Y-%m-%d')
             except ValueError:
-                errors.append(f"Line {idx}: Invalid date format '{dob_text}', expected DD/MM/YYYY.")
+                errors.append(f"Line {idx}: Invalid date format '{date_of_birth_text}', expected MM/DD/YYYY.")
                 continue
 
-            # Duplicate checks
+            # Check duplicates in DB and current batch
             duplicate = False
             if not employee_number:
                 errors.append(f"Line {idx}: Employee Number is missing.")
@@ -74,14 +75,14 @@ class StaffImportWizard(models.TransientModel):
             if duplicate:
                 continue
 
-            # Register seen entries to catch duplicates in this CSV
+            # Register these values as seen
             seen_emp_numbers.add(employee_number)
             seen_full_names.add(full_name)
             seen_id_numbers.add(id_number)
             if email:
                 seen_emails.add(email)
 
-            # Attempt to create the record
+            # Create employee onboarding record
             try:
                 Employee.create({
                     'full_name': full_name,
@@ -92,7 +93,7 @@ class StaffImportWizard(models.TransientModel):
                 })
                 created += 1
             except Exception as e:
-                errors.append(f"Line {idx}: Failed to create employee record: {str(e)}")
+                errors.append(f"Line {idx}: Failed to create record: {str(e)}")
 
         summary = f"Import completed: {created} employees created."
         if errors:

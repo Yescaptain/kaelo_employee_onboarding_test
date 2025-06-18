@@ -1,43 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-  <!-- Staff Import Wizard Form View -->
-  <record id="view_staff_import_wizard" model="ir.ui.view">
-    <field name="name">employee.onboarding.import.wizard</field>
-    <field name="model">employee.onboarding.import</field>
-    <field name="arch" type="xml">
-      <form string="Import Employee Onboarding">
-        <group>
-          <field name="csv_file" filename="filename"/>
-        </group>
-        <footer>
-          <button string="Import" type="object" name="action_import" class="btn-primary"/>
-          <button string="Cancel" class="btn-secondary" special="cancel"/>
-        </footer>
-      </form>
-    </field>
-  </record>
-
-  <!-- Root Menu -->
+  <!-- Root menu item -->
   <menuitem id="kaelo_onboarding_menu" name="Kaelo Onboarding" sequence="10"/>
 
-  <!-- Staff Import Action and Menu -->
-  <record id="action_staff_import" model="ir.actions.act_window">
-    <field name="name">Import Staff</field>
-    <field name="res_model">employee.onboarding.import</field>
-    <field name="view_mode">form</field>
-    <field name="target">new</field> <!-- opens as modal -->
-  </record>
-  <menuitem id="kaelo_staff_import_action" name="Import Staff"
-            parent="kaelo_onboarding_menu"
-            action="action_staff_import"
-            sequence="20"/>
-
-  <!-- Employee Onboarding Tree View -->
+  <!-- Tree view to display list of employee onboarding records -->
   <record id="view_employee_onboarding_tree" model="ir.ui.view">
     <field name="name">employee.onboarding.tree</field>
     <field name="model">employee.onboarding</field>
     <field name="arch" type="xml">
-      <tree>
+      <tree string="Employee Onboarding">
         <field name="full_name"/>
         <field name="employee_number"/>
         <field name="id_number"/>
@@ -47,7 +18,7 @@
     </field>
   </record>
 
-  <!-- Employee Onboarding Form View -->
+  <!-- Form view to edit one employee onboarding record -->
   <record id="view_employee_onboarding_form" model="ir.ui.view">
     <field name="name">employee.onboarding.form</field>
     <field name="model">employee.onboarding</field>
@@ -64,17 +35,17 @@
     </field>
   </record>
 
-  <!-- Employee Onboarding Action -->
+  <!-- Window action to open onboarding list with tree+form views -->
   <record id="action_employee_onboarding" model="ir.actions.act_window">
     <field name="name">Onboarding Records</field>
     <field name="res_model">employee.onboarding</field>
     <field name="view_mode">tree,form</field>
   </record>
 
-  <!-- Employee Onboarding Menu -->
+  <!-- Menu item in the root menu to launch the onboarding records view -->
   <menuitem id="kaelo_onboarding_records_action"
             name="Onboarding Records"
             parent="kaelo_onboarding_menu"
             action="action_employee_onboarding"
-            sequence="10"/>
+            sequence="5"/>
 </odoo>

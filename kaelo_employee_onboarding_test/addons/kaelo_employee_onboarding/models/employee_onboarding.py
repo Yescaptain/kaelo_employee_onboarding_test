@@ -18,7 +18,7 @@ class EmployeeOnboarding(models.Model):
     @api.constrains('full_name', 'id_number', 'date_of_birth', 'employee_number', 'email')
     def _check_fields(self):
         for record in self:
-            # Validate required fields (redundant due to required=True but safe)
+            # Validate required fields (redundant since required=True, but safe)
             if not record.full_name:
                 raise ValidationError("Full Name is required.")
             if not record.id_number:
@@ -34,14 +34,14 @@ class EmployeeOnboarding(models.Model):
             if record.email and not re.match(EMAIL_REGEX, record.email):
                 raise ValidationError(f"Email '{record.email}' is not valid.")
 
-            # Check uniqueness of fields (excluding current record)
-            domain_map = {
+            # Check uniqueness of fields (exclude current record)
+            unique_fields = {
                 'full_name': record.full_name,
                 'id_number': record.id_number,
                 'employee_number': record.employee_number,
                 'email': record.email,
             }
-            for field_name, value in domain_map.items():
+            for field_name, value in unique_fields.items():
                 existing = self.search([
                     (field_name, '=', value),
                     ('id', '!=', record.id)
