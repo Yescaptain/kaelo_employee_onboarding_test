@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <!-- Import Wizard Form View -->
+  <record id="view_staff_import_wizard" model="ir.ui.view">
+    <field name="name">employee.onboarding.import.wizard</field>
+    <field name="model">employee.onboarding.import</field>
+    <field name="arch" type="xml">
+      <form string="Import Employee Onboarding">
+        <group>
+          <field name="csv_file" filename="filename"/>
+        </group>
+        <footer>
+          <button string="Import" type="object" name="action_import" class="btn-primary"/>
+          <button string="Cancel" class="btn-secondary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <!-- Action to Open the Wizard -->
+  <record id="action_staff_import" model="ir.actions.act_window">
+    <field name="name">Import Staff</field>
+    <field name="res_model">employee.onboarding.import</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+
+  <!-- Menu Item for Import Staff -->
+  <menuitem id="kaelo_staff_import_action"
+            name="Import Staff"
+            parent="kaelo_onboarding_menu"
+            action="action_staff_import"
+            sequence="20"/>
+</odoo>
